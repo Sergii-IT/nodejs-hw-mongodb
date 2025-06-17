@@ -10,7 +10,11 @@ export const getAllContacts = async () => {
 export const getContactById = async (id) => {
   const contact = await Contact.findById(id);
   return contact;
+
+};
+
   };
+
 
 export const createContact = async (data) => {
   return Contact.create(data);
@@ -21,8 +25,16 @@ export const patchContactById = async (id, data) => {
     new: true, // повертає оновлений обʼєкт
     runValidators: true, // перевіряє типи/схему
   });
+
+};
+
+export const deleteContactById = async (id) => {
+  return Contact.findByIdAndDelete(id);
+};
+=======
   };
   
 export const deleteContactById = async (id) => {
   return Contact.findByIdAndDelete(id);
 };
+
