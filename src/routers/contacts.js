@@ -3,8 +3,8 @@ import {
   handleGetAllContacts,
   handleGetContactById,
   handleCreateContact,
-  handleUpdateContact,
-  handleDeleteContact,
+  handlePatchContactById,
+  handleDeleteContactById,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
@@ -30,9 +30,9 @@ router.patch(
   '/:contactId',
   isValidId,
   validateBody(updateContactSchema),
-  ctrlWrapper(handleUpdateContact)
+  ctrlWrapper(handlePatchContactById)
 );
 
-router.delete('/:contactId', isValidId, ctrlWrapper(handleDeleteContact));
+router.delete('/:contactId', isValidId, ctrlWrapper(handleDeleteContactById));
 
 export default router;
