@@ -7,15 +7,25 @@ import {
   deleteContactById,
 } from '../services/contacts.js';
 
+// GET /contacts?page=1&perPage=10
 export const handleGetAllContacts = async (req, res) => {
-  const contacts = await getAllContacts();
+  const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc' } = req.query;
+
+  const result = await getAllContacts({
+    page: Number(page),
+    perPage: Number(perPage),
+    sortBy,
+    sortOrder,
+  });
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
-    data: contacts,
+    data: result,
   });
 };
 
+// GET /contacts/:contactId
 export const handleGetContactById = async (req, res) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
@@ -31,6 +41,7 @@ export const handleGetContactById = async (req, res) => {
   });
 };
 
+// POST /contacts
 export const handleCreateContact = async (req, res) => {
   const { name, phoneNumber, contactType } = req.body;
 
@@ -47,6 +58,7 @@ export const handleCreateContact = async (req, res) => {
   });
 };
 
+// PATCH /contacts/:contactId
 export const handlePatchContactById = async (req, res) => {
   const { contactId } = req.params;
   const updatedData = req.body;
@@ -64,6 +76,7 @@ export const handlePatchContactById = async (req, res) => {
   });
 };
 
+// DELETE /contacts/:contactId
 export const handleDeleteContactById = async (req, res) => {
   const { contactId } = req.params;
 
@@ -73,5 +86,5 @@ export const handleDeleteContactById = async (req, res) => {
     throw createError(404, 'Contact not found');
   }
 
-  res.status(204).send(); // Немає тіла відповіді
+  res.status(204).send(); // No content
 };

@@ -1,9 +1,37 @@
-import { Contact } from '../db/models/contactModel.js'; // Імпортуємо модель
+import { Contact } from '../db/models/contactModel.js';
 
-// Отримати всі контакти
-export const getAllContacts = async () => {
-  const contacts = await Contact.find();
-  return contacts;
+// Отримати всі контакти з пагінацією і сортуванням
+export const getAllContacts = async ({
+  page = 1,
+  perPage = 10,
+  sortBy = 'name',
+  sortOrder = 'asc',
+}) => {
+  const skip = (page - 1) * perPage;
+  const sortDirection = sortOrder === 'desc' ? -1 : 1;
+
+  const sortOption = {};
+  if (sortBy) {
+    sortOption[sortBy] = sortDirection;
+  }
+
+  const totalItems = await Contact.countDocuments();
+  const contacts = await Contact.find()
+    .sort(sortOption)
+    .skip(skip)
+    .limit(perPage);
+
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  return {
+    data: contacts,
+    page,
+    perPage,
+    totalItems,
+    totalPages,
+    hasPreviousPage: page > 1,
+    hasNextPage: page < totalPages,
+  };
 };
 
 // Отримати один контакт за _id
