@@ -1,4 +1,5 @@
-import { BadRequest } from 'http-errors';
+import httpErrors from 'http-errors';
+const { BadRequest } = httpErrors;
 
 export const validateBody = (schema) => {
   return (req, res, next) => {

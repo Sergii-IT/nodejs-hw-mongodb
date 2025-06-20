@@ -35,8 +35,6 @@ router.patch(
 );
 
 router.delete('/:contactId', isValidId, ctrlWrapper(handleDeleteContactById));
-
-=======
 router.get('/:contactId', ctrlWrapper(handleGetContactById));
 router.post('/', ctrlWrapper(handleCreateContact));
 router.patch('/:contactId', ctrlWrapper(handlePatchContactById));
