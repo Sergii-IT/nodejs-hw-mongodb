@@ -52,4 +52,3 @@ export const patchContactById = async (id, data) => {
 export const deleteContactById = async (id) => {
   return Contact.findByIdAndDelete(id);
 };
-
