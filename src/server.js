@@ -3,8 +3,10 @@ import cors from 'cors';
 import pinoHttp from 'pino-http';
 import { getEnvVar } from './utils/getEnvVar.js';
 import contactsRouter from './routers/contacts.js';
+import authRouter from './routers/auth.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import cookieParser from 'cookie-parser';
 
 export const setupServer = () => {
   const app = express();
@@ -18,6 +20,9 @@ export const setupServer = () => {
     res.json({ message: 'Hello World!' });
   });
 
+  
+  app.use(cookieParser());
+  app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
   // 404 handler

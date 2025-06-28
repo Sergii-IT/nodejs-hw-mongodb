@@ -10,12 +10,14 @@ import {
 // GET /contacts?page=1&perPage=10
 export const handleGetAllContacts = async (req, res) => {
   const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc' } = req.query;
+  const userId = req.user._id;
 
   const result = await getAllContacts({
     page: Number(page),
     perPage: Number(perPage),
     sortBy,
     sortOrder,
+    userId,
   });
 
   res.status(200).json({
@@ -28,7 +30,9 @@ export const handleGetAllContacts = async (req, res) => {
 // GET /contacts/:contactId
 export const handleGetContactById = async (req, res) => {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const userId = req.user._id;
+
+  const contact = await getContactById(contactId, userId);
 
   if (!contact) {
     throw createError(404, 'Contact not found');
@@ -49,7 +53,8 @@ export const handleCreateContact = async (req, res) => {
     throw createError(400, 'Missing required fields: name, phoneNumber, or contactType');
   }
 
-  const newContact = await createContact(req.body);
+  const userId = req.user._id;
+  const newContact = await createContact(req.body, userId);
 
   res.status(201).json({
     status: 201,
@@ -62,8 +67,9 @@ export const handleCreateContact = async (req, res) => {
 export const handlePatchContactById = async (req, res) => {
   const { contactId } = req.params;
   const updatedData = req.body;
+  const userId = req.user._id;
 
-  const updatedContact = await patchContactById(contactId, updatedData);
+  const updatedContact = await patchContactById(contactId, userId, updatedData);
 
   if (!updatedContact) {
     throw createError(404, 'Contact not found');
@@ -79,8 +85,9 @@ export const handlePatchContactById = async (req, res) => {
 // DELETE /contacts/:contactId
 export const handleDeleteContactById = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user._id;
 
-  const deleted = await deleteContactById(contactId);
+  const deleted = await deleteContactById(contactId, userId);
 
   if (!deleted) {
     throw createError(404, 'Contact not found');

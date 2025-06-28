@@ -1,4 +1,5 @@
 import express from 'express';
+import { authenticate } from '../middlewares/authenticate.js';
 import {
   handleGetAllContacts,
   handleGetContactById,
@@ -16,9 +17,9 @@ import {
 
 const router = express.Router();
 
+router.use(authenticate);
+
 router.get('/', ctrlWrapper(handleGetAllContacts));
-
-
 router.get('/:contactId', isValidId, ctrlWrapper(handleGetContactById));
 
 router.post(
