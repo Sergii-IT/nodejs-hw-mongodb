@@ -30,6 +30,7 @@ const contactsSchema = new Schema(
       enum: ['personal','home','work'],
       default: 'personal',
     },
+    userId: { type: new Schema.Types.ObjectId, ref: 'User', required: true },
   },
   {
     timestamps: true, // створює поля createdAt та updatedAt
