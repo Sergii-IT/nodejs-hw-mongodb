@@ -9,6 +9,28 @@ const JWT_SECRET = getEnvVar('JWT_SECRET');
 const ACCESS_EXPIRES_IN = 15 * 60; // 15 хв в секундах
 const REFRESH_EXPIRES_IN = 30 * 24 * 60 * 60; // 30 днів в секундах
 
+// Реєстрація нового користувача
+export const register = async ({ name, email, password }) => {
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw createHttpError(409, 'Email in use');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const newUser = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  const userWithoutPassword = newUser.toObject();
+  delete userWithoutPassword.password;
+
+  return userWithoutPassword;
+};
+
+// Логін користувача
 export const login = async ({ email, password }) => {
   const user = await User.findOne({ email });
   if (!user) throw createHttpError(401, 'Invalid email or password');
@@ -16,12 +38,10 @@ export const login = async ({ email, password }) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw createHttpError(401, 'Invalid email or password');
 
-  // Створюємо токени
   const payload = { userId: user._id };
   const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: ACCESS_EXPIRES_IN });
   const refreshToken = jwt.sign(payload, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN });
 
-  // Видаляємо стару сесію
   await Session.deleteMany({ userId: user._id });
 
   const now = new Date();
@@ -39,6 +59,7 @@ export const login = async ({ email, password }) => {
   return { accessToken, refreshToken };
 };
 
+// Оновлення сесії
 export const refresh = async (refreshToken) => {
   let payload;
 
@@ -54,10 +75,8 @@ export const refresh = async (refreshToken) => {
     throw createHttpError(401, 'Session not found');
   }
 
-  // Видаляємо стару сесію
   await Session.deleteOne({ _id: existingSession._id });
 
-  // Генеруємо нові токени
   const newPayload = { userId: payload.userId };
   const accessToken = jwt.sign(newPayload, JWT_SECRET, { expiresIn: ACCESS_EXPIRES_IN });
   const newRefreshToken = jwt.sign(newPayload, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN });
@@ -74,9 +93,10 @@ export const refresh = async (refreshToken) => {
     refreshTokenValidUntil,
   });
 
-  return { accessToken, newRefreshToken };
+  return { accessToken, refreshToken: newRefreshToken };
 };
 
+// Логаут
 export const logout = async (refreshToken) => {
   await Session.deleteOne({ refreshToken });
 };

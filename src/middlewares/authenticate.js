@@ -1,44 +1,37 @@
 import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
+import { getEnvVar } from '../utils/getEnvVar.js';
 import Session from '../db/models/Session.js';
 import User from '../db/models/User.js';
-import { getEnvVar } from '../utils/getEnvVar.js';
 
 const JWT_SECRET = getEnvVar('JWT_SECRET');
 
 export const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+
+  if (!token) {
+    return next(createHttpError(401, 'Missing access token'));
+  }
+
   try {
-    const authHeader = req.headers.authorization;
+    const payload = jwt.verify(token, JWT_SECRET);
 
-    if (!authHeader?.startsWith('Bearer ')) {
-      throw createHttpError(401, 'Missing or invalid Authorization header');
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    let payload;
-    try {
-      payload = jwt.verify(token, JWT_SECRET);
-    } catch (err) {
-      if (err.name === 'TokenExpiredError') {
-        throw createHttpError(401, 'Access token expired');
-      }
-      throw createHttpError(401, 'Invalid access token');
-    }
-
+    // Перевірка наявності токена в сесії (захист від використання після logout)
     const session = await Session.findOne({ accessToken: token });
+
     if (!session) {
-      throw createHttpError(401, 'Session not found');
+      return next(createHttpError(401, 'Access token expired or invalid'));
     }
 
-    const user = await User.findById(payload.userId);
+    const user = await User.findById(payload.userId).select('-password');
     if (!user) {
-      throw createHttpError(401, 'User not found');
+      return next(createHttpError(401, 'User not found'));
     }
 
-    req.user = user; // 👉 додано користувача в запит
+    req.user = user;
     next();
-  } catch (error) {
-    next(error);
+  } catch {
+    next(createHttpError(401, 'Invalid or expired access token'));
   }
 };
