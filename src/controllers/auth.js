@@ -1,7 +1,7 @@
 import { register, login, refresh, logout } from '../services/auth.js';
 import createHttpError from 'http-errors';
 
-export const handleRegister = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -17,7 +17,7 @@ export const handleRegister = async (req, res) => {
   });
 };
 
-export const handleLogin = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
