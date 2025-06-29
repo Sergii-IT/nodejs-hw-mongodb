@@ -40,7 +40,7 @@ export const loginUser = async (req, res) => {
   });
 };
 
-export const handleRefresh = async (req, res) => {
+export const refreshSession = async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
@@ -63,7 +63,7 @@ export const handleRefresh = async (req, res) => {
   });
 };
 
-export const handleLogout = async (req, res) => {
+export const logoutUser = async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
