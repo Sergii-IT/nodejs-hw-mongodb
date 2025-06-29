@@ -59,7 +59,7 @@ export const login = async ({ email, password }) => {
   return { accessToken, refreshToken };
 };
 
-// Оновлення сесії за refresh токеном
+// Оновлення сесії
 export const refresh = async (refreshToken) => {
   let payload;
 
@@ -96,7 +96,7 @@ export const refresh = async (refreshToken) => {
   return { accessToken, refreshToken: newRefreshToken };
 };
 
-// Логаут — видалення сесії
+// Логаут
 export const logout = async (refreshToken) => {
   await Session.deleteOne({ refreshToken });
 };

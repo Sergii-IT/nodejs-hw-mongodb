@@ -1,93 +1,76 @@
-import createHttpError from 'http-errors';
 import { register, login, refresh, logout } from '../services/auth.js';
+import createHttpError from 'http-errors';
 
-export const registerUser = async (req, res, next) => {
-  try {
-    const newUser = await register(req.body);
+export const handleRegister = async (req, res) => {
+  const { name, email, password } = req.body;
 
-    res.status(201).json({
-      status: 'success',
-      message: 'Successfully registered a user!',
-      data: {
-        user: {
-          _id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          createdAt: newUser.createdAt,
-        },
-      },
-    });
-  } catch (error) {
-    next(error);
+  if (!name || !email || !password) {
+    throw createHttpError(400, 'Missing required fields');
   }
+
+  const user = await register({ name, email, password });
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully registered a user!',
+    data: user,
+  });
 };
 
-export const loginUser = async (req, res, next) => {
-  try {
-    const { accessToken, refreshToken } = await login(req.body);
+export const handleLogin = async (req, res) => {
+  const { email, password } = req.body;
 
-    // Запис у cookies
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 днів
-    });
-
-    res.status(200).json({
-      status: 'success',
-      message: 'Successfully logged in an user!',
-      data: { accessToken },
-    });
-  } catch (error) {
-    next(error);
+  if (!email || !password) {
+    throw createHttpError(400, 'Missing email or password');
   }
+
+  const { accessToken, refreshToken } = await login({ email, password });
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: { accessToken },
+  });
 };
 
-export const refreshSession = async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies?.refreshToken;
-    if (!refreshToken) {
-      throw createHttpError(401, 'Refresh token is missing');
-    }
+export const handleRefresh = async (req, res) => {
+  const { refreshToken } = req.cookies;
 
-    const { accessToken, newRefreshToken } = await refresh(refreshToken);
-
-    // оновлюємо cookie
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 днів
-    });
-
-    res.status(200).json({
-      status: 'success',
-      message: 'Successfully refreshed a session!',
-      data: { accessToken },
-    });
-  } catch (error) {
-    next(error);
+  if (!refreshToken) {
+    throw createHttpError(401, 'Missing refresh token');
   }
+
+  const { accessToken, refreshToken: newRefreshToken } = await refresh(refreshToken);
+
+  res.cookie('refreshToken', newRefreshToken, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: { accessToken },
+  });
 };
 
-export const logoutUser = async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies?.refreshToken;
-    if (!refreshToken) {
-      return res.sendStatus(204); // вже немає сесії
-    }
+export const handleLogout = async (req, res) => {
+  const { refreshToken } = req.cookies;
 
-    await logout(refreshToken);
-
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-    });
-
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
+  if (!refreshToken) {
+    throw createHttpError(400, 'Missing refresh token');
   }
+
+  await logout(refreshToken);
+  res.clearCookie('refreshToken');
+  res.status(204).send();
 };
