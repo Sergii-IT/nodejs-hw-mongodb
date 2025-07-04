@@ -14,7 +14,7 @@ import { getEnvVar } from '../utils/getEnvVar.js';
 
 const JWT_SECRET = getEnvVar('JWT_SECRET');
 
-export const handleRegister = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -35,7 +35,7 @@ export const handleRegister = async (req, res) => {
   });
 };
 
-export const handleLogin = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -58,7 +58,7 @@ export const handleLogin = async (req, res) => {
   });
 };
 
-export const handleRefresh = async (req, res) => {
+export const refreshSession = async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
@@ -83,7 +83,7 @@ export const handleRefresh = async (req, res) => {
   });
 };
 
-export const handleLogout = async (req, res) => {
+export const logoutUser = async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
@@ -111,7 +111,7 @@ export const handleSendResetEmail = async (req, res) => {
   });
 };
 
-export const handleResetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   const { token, password } = req.body;
 
   let payload;
