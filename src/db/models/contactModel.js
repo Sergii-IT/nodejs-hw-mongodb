@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 const contactsSchema = new Schema(
-   {
+  {
     name: {
       type: String,
       required: true,
@@ -18,7 +18,7 @@ const contactsSchema = new Schema(
         validator: function (v) {
           return v === null || /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
         },
-        message: props => `${props.value} is not a valid email!`,
+        message: (props) => `${props.value} is not a valid email!`,
       },
     },
     isFavourite: {
@@ -27,14 +27,18 @@ const contactsSchema = new Schema(
     },
     contactType: {
       type: String,
-      enum: ['personal','home','work'],
+      enum: ['personal', 'home', 'work'],
       default: 'personal',
     },
-    userId: { type: new Schema.Types.ObjectId, ref: 'User', required: true },
+    photo: {
+      type: String,
+      default: null,
+    },
+    userId: { type: new Schema.Types.ObjectId(), ref: 'User', required: true },
   },
   {
     timestamps: true, // створює поля createdAt та updatedAt
-  }
+  },
 );
 
 export const Contact = model('contacts', contactsSchema);

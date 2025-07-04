@@ -6,6 +6,7 @@ import {
   patchContactById,
   deleteContactById,
 } from '../services/contacts.js';
+import { uploadImage } from '../utils/cloudinary.js';
 
 // GET /contacts?page=1&perPage=10
 export const handleGetAllContacts = async (req, res) => {
@@ -48,13 +49,21 @@ export const handleGetContactById = async (req, res) => {
 // POST /contacts
 export const handleCreateContact = async (req, res) => {
   const { name, phoneNumber, contactType } = req.body;
+  const userId = req.user._id;
 
   if (!name || !phoneNumber || !contactType) {
     throw createError(400, 'Missing required fields: name, phoneNumber, or contactType');
   }
 
-  const userId = req.user._id;
-  const newContact = await createContact(req.body, userId);
+  let photoUrl = null;
+  if (req.file) {
+    photoUrl = await uploadImage(req.file.buffer);
+  }
+
+  const newContact = await createContact(
+    { name, phoneNumber, contactType, photo: photoUrl },
+    userId
+  );
 
   res.status(201).json({
     status: 201,
@@ -66,8 +75,12 @@ export const handleCreateContact = async (req, res) => {
 // PATCH /contacts/:contactId
 export const handlePatchContactById = async (req, res) => {
   const { contactId } = req.params;
-  const updatedData = req.body;
   const userId = req.user._id;
+  const updatedData = { ...req.body };
+
+  if (req.file) {
+    updatedData.photo = await uploadImage (req.file.buffer);
+  }
 
   const updatedContact = await patchContactById(contactId, userId, updatedData);
 
@@ -93,5 +106,5 @@ export const handleDeleteContactById = async (req, res) => {
     throw createError(404, 'Contact not found');
   }
 
-  res.status(204).send(); // No content
+  res.status(204).send();
 };
