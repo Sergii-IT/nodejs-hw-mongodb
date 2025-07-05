@@ -80,7 +80,7 @@ export const handlePatchContactById = async (req, res) => {
 
   if (req.file) {
     updatedData.photo = await uploadImage (req.file.buffer);
-  }
+  } 
 
   const updatedContact = await patchContactById(contactId, userId, updatedData);
 

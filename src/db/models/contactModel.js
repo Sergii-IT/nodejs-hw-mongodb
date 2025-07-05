@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 const contactsSchema = new Schema(
   {
@@ -34,10 +34,14 @@ const contactsSchema = new Schema(
       type: String,
       default: null,
     },
-    userId: { type: new Schema.Types.ObjectId(), ref: 'User', required: true },
+    userId: {
+      type: Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   {
-    timestamps: true, // створює поля createdAt та updatedAt
+    timestamps: true,
   },
 );
 
