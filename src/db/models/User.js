@@ -20,8 +20,8 @@ const userSchema = new Schema(
     },
   },
   {
-    timestamps: true, // створює createdAt і updatedAt
-  }
+    timestamps: true,
+  },
 );
 
 const User = model('User', userSchema);
