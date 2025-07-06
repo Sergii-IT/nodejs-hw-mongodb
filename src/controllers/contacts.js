@@ -10,7 +10,12 @@ import { uploadImage } from '../utils/cloudinary.js';
 
 // GET /contacts
 export const handleGetAllContacts = async (req, res) => {
-  const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc' } = req.query;
+  const {
+    page = 1,
+    perPage = 10,
+    sortBy = 'name',
+    sortOrder = 'asc',
+  } = req.query;
   const userId = req.user._id;
 
   const result = await getAllContacts({
@@ -49,7 +54,10 @@ export const handleCreateContact = async (req, res) => {
   const userId = req.user._id;
 
   if (!name || !phoneNumber || !contactType) {
-    throw createError(400, 'Missing required fields: name, phoneNumber, or contactType');
+    throw createError(
+      400,
+      'Missing required fields: name, phoneNumber, or contactType',
+    );
   }
 
   let photoUrl = null;
@@ -64,7 +72,7 @@ export const handleCreateContact = async (req, res) => {
 
   const newContact = await createContact(
     { name, phoneNumber, contactType, photo: photoUrl },
-    userId
+    userId,
   );
 
   res.status(201).json({
