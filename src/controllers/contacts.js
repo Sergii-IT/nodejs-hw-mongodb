@@ -8,7 +8,7 @@ import {
 } from '../services/contacts.js';
 import { uploadImage } from '../utils/cloudinary.js';
 
-// GET /contacts?page=1&perPage=10
+// GET /contacts
 export const handleGetAllContacts = async (req, res) => {
   const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc' } = req.query;
   const userId = req.user._id;
@@ -34,10 +34,7 @@ export const handleGetContactById = async (req, res) => {
   const userId = req.user._id;
 
   const contact = await getContactById(contactId, userId);
-
-  if (!contact) {
-    throw createError(404, 'Contact not found');
-  }
+  if (!contact) throw createError(404, 'Contact not found');
 
   res.status(200).json({
     status: 200,
@@ -57,7 +54,12 @@ export const handleCreateContact = async (req, res) => {
 
   let photoUrl = null;
   if (req.file) {
-    photoUrl = await uploadImage(req.file.buffer);
+    try {
+      photoUrl = await uploadImage(req.file.buffer);
+    } catch (err) {
+      console.error('Image upload failed:', err.message);
+      throw createError(500, 'Image upload failed');
+    }
   }
 
   const newContact = await createContact(
@@ -79,14 +81,16 @@ export const handlePatchContactById = async (req, res) => {
   const updatedData = { ...req.body };
 
   if (req.file) {
-    updatedData.photo = await uploadImage (req.file.buffer);
-  } 
+    try {
+      updatedData.photo = await uploadImage(req.file.buffer);
+    } catch (err) {
+      console.error('Image upload failed:', err.message);
+      throw createError(500, 'Image upload failed');
+    }
+  }
 
   const updatedContact = await patchContactById(contactId, userId, updatedData);
-
-  if (!updatedContact) {
-    throw createError(404, 'Contact not found');
-  }
+  if (!updatedContact) throw createError(404, 'Contact not found');
 
   res.status(200).json({
     status: 200,
@@ -101,10 +105,7 @@ export const handleDeleteContactById = async (req, res) => {
   const userId = req.user._id;
 
   const deleted = await deleteContactById(contactId, userId);
-
-  if (!deleted) {
-    throw createError(404, 'Contact not found');
-  }
+  if (!deleted) throw createError(404, 'Contact not found');
 
   res.status(204).send();
 };

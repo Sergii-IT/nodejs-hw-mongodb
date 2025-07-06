@@ -7,12 +7,12 @@ import { getEnvVar } from '../utils/getEnvVar.js';
 import { sendEmail } from '../utils/mailer.js';
 
 const JWT_SECRET = getEnvVar('JWT_SECRET');
-const ACCESS_EXPIRES_IN = 15 * 60; // 15 хв в секундах
-const REFRESH_EXPIRES_IN = 30 * 24 * 60 * 60; // 30 днів в секундах
-const RESET_EXPIRES_IN = 5 * 60; // 5 хвилин
+const ACCESS_EXPIRES_IN = 15 * 60; // 15 хв
+const REFRESH_EXPIRES_IN = 30 * 24 * 60 * 60; // 30 днів
+const RESET_EXPIRES_IN = 5 * 60; // 5 хв
 const APP_DOMAIN = getEnvVar('APP_DOMAIN');
 
-// Реєстрація нового користувача
+// Реєстрація користувача
 export const register = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -62,13 +62,14 @@ export const login = async ({ email, password }) => {
   return { accessToken, refreshToken };
 };
 
-// Оновлення сесії
+// Оновлення токенів (сесії)
 export const refresh = async (refreshToken) => {
   let payload;
 
   try {
     payload = jwt.verify(refreshToken, JWT_SECRET);
-  } catch {
+  } catch (err) {
+    console.error('JWT verification failed:', err.message);
     throw createHttpError(401, 'Invalid refresh token');
   }
 
@@ -104,7 +105,7 @@ export const logout = async (refreshToken) => {
   await Session.deleteOne({ refreshToken });
 };
 
-// Відправлення email для скидання пароля
+// Надіслати листа для скидання паролю
 export const sendResetEmail = async (email) => {
   const user = await User.findOne({ email });
 
