@@ -12,13 +12,20 @@ cloudinary.config({
 
 export const uploadImage = (buffer) => {
   return new Promise((resolve, reject) => {
+    if (!buffer) {
+      return reject(new Error('Missing image buffer'));
+    }
+
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: 'contacts-app',
         resource_type: 'image',
       },
       (error, result) => {
-        if (error) return reject(error);
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          return reject(new Error('Image upload failed'));
+        }
         resolve(result.secure_url);
       }
     );
