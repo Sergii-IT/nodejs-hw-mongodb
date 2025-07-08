@@ -27,7 +27,7 @@ export const uploadImage = (buffer) => {
           return reject(new Error('Image upload failed'));
         }
         resolve(result.secure_url);
-      }
+      },
     );
 
     Readable.from(buffer).pipe(stream);
