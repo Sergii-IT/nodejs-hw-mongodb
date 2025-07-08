@@ -98,7 +98,10 @@ export const logoutUser = async (req, res) => {
 export const handleSendResetEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
-    if (!email) throw createHttpError(400, 'Missing email');
+
+    if (!email) throw createHttpError(400, 'Missing email field');
+
+    console.log(`[send-reset-email] sending to ${email}`);
 
     await sendResetEmail(email);
 
@@ -107,37 +110,38 @@ export const handleSendResetEmail = async (req, res, next) => {
       message: 'Reset password email has been successfully sent.',
       data: {},
     });
-  } catch (error) {
-    console.error('❗ send-reset-email failed:', error);
+
+  } catch (err) {
+    console.error('[send-reset-email] ERROR:', err);
+
     next(createHttpError(500, 'Failed to send email, server error'));
   }
 };
 
-export const resetPassword = async (req, res) => {
-  const { token, password } = req.body;
-
-  let payload;
+export const resetPassword = async (req, res, next) => {
   try {
-    payload = jwt.verify(token, JWT_SECRET);
-  } catch {
-    throw createHttpError(401, 'Token is expired or invalid.');
+    const { token, password } = req.body;
+    console.log('[reset-pwd] received:', token ? 'token' : 'no-token');
+
+    let payload;
+    try {
+      payload = jwt.verify(token, JWT_SECRET);
+    } catch (jwtErr) {
+      console.error('[reset-pwd] JWT ERROR:', jwtErr);
+      throw createHttpError(401, 'Token is expired or invalid.');
+    }
+
+    const user = await User.findOne({ email: payload.email });
+    if (!user) throw createHttpError(404, 'User not found!');
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    await Session.deleteMany({ userId: user._id });
+    res.status(200).json({ status: 200, message: 'Password has been successfully reset.', data: {} });
+  } catch (err) {
+    console.error('[reset-pwd] ERROR:', err);
+    next(err);
   }
-
-  const user = await User.findOne({ email: payload.email });
-
-  if (!user) {
-    throw createHttpError(404, 'User not found!');
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  user.password = hashedPassword;
-  await user.save();
-
-  await Session.deleteMany({ userId: user._id });
-
-  res.status(200).json({
-    status: 200,
-    message: 'Password has been successfully reset.',
-    data: {},
-  });
 };
