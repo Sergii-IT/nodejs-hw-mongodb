@@ -3,7 +3,7 @@ import multer from 'multer';
 const storage = multer.memoryStorage();
 
 const limits = {
-  fileSize: 5 * 1024 * 1024, // 5 MB
+  fileSize: 5 * 1024 * 1024, // 5MB
 };
 
 const fileFilter = (req, file, cb) => {
@@ -11,7 +11,7 @@ const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Unsupported file type. Only JPG, PNG, and WEBP allowed.'));
+    cb(new Error('Unsupported file type. Only JPG, PNG, WEBP allowed.'));
   }
 };
 

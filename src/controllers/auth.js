@@ -98,9 +98,11 @@ export const logoutUser = async (req, res) => {
 export const handleSendResetEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
+
     if (!email) throw createHttpError(400, 'Missing email field');
 
     console.log(`[send-reset-email] sending to ${email}`);
+
     await sendResetEmail(email);
 
     res.status(200).json({
@@ -108,8 +110,10 @@ export const handleSendResetEmail = async (req, res, next) => {
       message: 'Reset password email has been successfully sent.',
       data: {},
     });
+
   } catch (err) {
     console.error('[send-reset-email] ERROR:', err);
+
     next(createHttpError(500, 'Failed to send email, server error'));
   }
 };
