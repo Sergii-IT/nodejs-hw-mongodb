@@ -1,0 +1,22 @@
+type: object
+properties:
+  _id:
+    type: string
+  name:
+    type: string
+  email:
+    type: string
+    nullable: true
+  phoneNumber:
+    type: string
+  contactType:
+    type: string
+    enum: [personal, home, work]
+  photo:
+    type: string
+    nullable: true
+  isFavourite:
+    type: boolean
+required:
+  - name
+  - phoneNumber

@@ -1,0 +1,58 @@
+get:
+  tags:
+    - Contacts
+  summary: Отримати всі контакти
+  operationId: getAllContacts
+  description: Отримати список усіх контактів поточного користувача
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: page
+      in: query
+      description: Номер сторінки
+      required: false
+      schema:
+        type: integer
+    - name: limit
+      in: query
+      description: Кількість елементів на сторінці
+      required: false
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Успішна відповідь
+    '401':
+      description: Неавторизований доступ
+
+post:
+  tags:
+    - Contacts
+  summary: Створити новий контакт
+  operationId: createContact
+  description: Створити нового контакта для поточного користувача
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+            photo:
+              type: string
+              format: binary
+  responses:
+    '201':
+      description: Контакт створено
+    '400':
+      description: Невалідні дані
+    '401':
+      description: Неавторизований доступ
