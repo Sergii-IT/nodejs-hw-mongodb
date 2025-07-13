@@ -5,16 +5,14 @@ properties:
   name:
     type: string
   email:
-    type: string
-    nullable: true
+    type: [string, "null"]
   phoneNumber:
     type: string
   contactType:
     type: string
     enum: [personal, home, work]
   photo:
-    type: string
-    nullable: true
+    type: [string, "null"]
   isFavourite:
     type: boolean
 required:

@@ -1,0 +1,28 @@
+type: object
+properties:
+  name:
+    type: string
+    example: Іван Петренко
+  email:
+    type: string
+    format: email
+    example: ivan.petrenko@example.com
+  phoneNumber:
+    type: string
+    example: "+380961234567"
+  contactType:
+    type: string
+    enum:
+      - personal
+      - home
+      - work
+    example: home
+  photo:
+    type: string
+    format: binary
+  isFavourite:
+    type: boolean
+    example: false
+required:
+  - name
+  - phoneNumber

@@ -1,0 +1,9 @@
+description: Невалідні дані
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Некоректний запит

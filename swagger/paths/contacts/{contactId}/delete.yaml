@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Видалити контакт
 operationId: deleteContact
-description: Видалити контакт за ID
+description: Видалити контакт за унікальним ID
 security:
   - bearerAuth: []
 parameters:
@@ -12,10 +12,24 @@ parameters:
     description: Унікальний ID контакту
     schema:
       type: string
+
 responses:
-  '204':
+  '200':
     description: Контакт успішно видалено
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            code:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Контакт видалено успішно
+
   '404':
-    description: Контакт не знайдено
+    $ref: ../../../components/responses/NotFound.yaml
+
   '401':
-    description: Неавторизований доступ
+    $ref: ../../../components/responses/Unauthorized.yaml

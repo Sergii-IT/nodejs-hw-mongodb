@@ -1,0 +1,9 @@
+description: Неавторизований доступ
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Ви не авторизовані для цієї дії
