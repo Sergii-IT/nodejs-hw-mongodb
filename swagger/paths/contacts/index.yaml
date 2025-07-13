@@ -1,4 +1,4 @@
-  tags:
+tags:
     - Contacts
   summary: Отримати список контактів
   operationId: getAllContacts
