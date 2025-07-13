@@ -12,10 +12,24 @@ parameters:
     description: Унікальний ID контакту
     schema:
       type: string
+
 responses:
   '200':
     description: Контакт знайдено
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            code:
+              type: integer
+              example: 200
+            data:
+              type: object
+              properties:
+                contact:
+                  $ref: ../../../components/schemas/Contact.yaml
   '404':
-    description: Контакт не знайдено
+    $ref: ../../../components/responses/NotFound.yaml
   '401':
-    description: Неавторизований доступ
+    $ref: '../../../components/responses/Unauthorized.yaml'

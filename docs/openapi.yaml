@@ -20,15 +20,18 @@ servers:
 
 paths:
   /contacts:
-    $ref: '../swagger/paths/contacts/index.yaml'
+    post:
+      $ref: ../swagger/paths/contacts/post.yaml
+    get:
+      $ref: ../swagger/paths/contacts/index.yaml
 
   /contacts/{contactId}:
     get:
-      $ref: '../swagger/paths/contacts/{contactId}/get.yaml'
+      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
     patch:
-      $ref: '../swagger/paths/contacts/{contactId}/patch.yaml'
+      $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
     delete:
-      $ref: '../swagger/paths/contacts/{contactId}/delete.yaml'
+      $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
 
 components:
   securitySchemes:
