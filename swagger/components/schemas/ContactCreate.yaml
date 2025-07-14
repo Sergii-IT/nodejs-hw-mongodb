@@ -1,4 +1,7 @@
 type: object
+required:
+  - name
+  - phoneNumber
 properties:
   name:
     type: string
@@ -23,6 +26,3 @@ properties:
   isFavourite:
     type: boolean
     example: false
-required:
-  - name
-  - phoneNumber
