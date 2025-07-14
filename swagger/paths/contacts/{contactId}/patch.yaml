@@ -17,18 +17,7 @@ requestBody:
   content:
     multipart/form-data:
       schema:
-        type: object
-        properties:
-          name:
-            type: string
-          email:
-            type: string
-            format: email
-          phone:
-            type: string
-          photo:
-            type: string
-            format: binary
+        $ref: ../../../components/schemas/ContactUpdate.yaml
 responses:
   '200':
     description: Контакт оновлено
@@ -37,9 +26,6 @@ responses:
         schema:
           type: object
           properties:
-            status:
-              type: string
-              example: success
             code:
               type: integer
               example: 200
@@ -52,3 +38,5 @@ responses:
     $ref: ../../../components/responses/BadRequest.yaml
   '404':
     $ref: ../../../components/responses/NotFound.yaml
+  '401':
+    $ref: ../../../components/responses/Unauthorized.yaml

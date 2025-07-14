@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Створити новий контакт
 operationId: createContact
-description: Додає новий контакт до бази даних
+description: Додати новий контакт до списку користувача
 security:
   - bearerAuth: []
 requestBody:

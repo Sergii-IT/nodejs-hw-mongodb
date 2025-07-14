@@ -6,26 +6,48 @@ tags:
   security:
     - bearerAuth: []
   parameters:
-    - name: page
-      in: query
-      description: Номер сторінки
-      schema:
-        type: integer
-        default: 1
-    - name: limit
-      in: query
-      description: Кількість елементів на сторінку
-      schema:
-        type: integer
-        default: 10
+  - name: page
+    in: query
+    description: Номер сторінки
+    required: false
+    schema:
+      type: integer
+      default: 1
+
+  - name: limit
+    in: query
+    description: Кількість контактів на сторінку
+    required: false
+    schema:
+      type: integer
+      default: 10
+
+  - name: favorite
+    in: query
+    description: Фільтрація за обраними контактами
+    required: false
+    schema:
+      type: boolean
   responses:
     '200':
-      description: Список контактів
+      description: Успішна відповідь з пагінацією
       content:
         application/json:
           schema:
             type: object
             properties:
+              totalContacts:
+                type: integer
+                example: 37
+              totalPages:
+                type: integer
+                example: 4
+              page:
+                type: integer
+                example: 2
+              limit:
+                type: integer
+                example: 10
               contacts:
                 type: array
                 items:

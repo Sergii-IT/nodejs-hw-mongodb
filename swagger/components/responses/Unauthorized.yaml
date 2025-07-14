@@ -6,4 +6,4 @@ content:
       properties:
         message:
           type: string
-          example: Ви не авторизовані для цієї дії
+          example: Not authorized

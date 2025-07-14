@@ -33,7 +33,7 @@
         ],
         "summary": "Створити новий контакт",
         "operationId": "createContact",
-        "description": "Додає новий контакт до бази даних",
+        "description": "Додати новий контакт до списку користувача",
         "security": [
           {
             "bearerAuth": []
@@ -99,6 +99,7 @@
             "name": "page",
             "in": "query",
             "description": "Номер сторінки",
+            "required": false,
             "schema": {
               "type": "integer",
               "default": 1
@@ -107,21 +108,47 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Кількість елементів на сторінку",
+            "description": "Кількість контактів на сторінку",
+            "required": false,
             "schema": {
               "type": "integer",
               "default": 10
+            }
+          },
+          {
+            "name": "favorite",
+            "in": "query",
+            "description": "Фільтрація за обраними контактами",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Список контактів",
+            "description": "Успішна відповідь з пагінацією",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "totalContacts": {
+                      "type": "integer",
+                      "example": 37
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 4
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 2
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 10
+                    },
                     "contacts": {
                       "type": "array",
                       "items": {
@@ -224,23 +251,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "phone": {
-                    "type": "string"
-                  },
-                  "photo": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
+                "$ref": "#/components/schemas/ContactUpdate"
               }
             }
           }
@@ -253,10 +264,6 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "success"
-                    },
                     "code": {
                       "type": "integer",
                       "example": 200
@@ -276,6 +283,9 @@
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -306,25 +316,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Контакт успішно видалено",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Контакт видалено успішно"
-                    }
-                  }
-                }
-              }
-            }
+          "204": {
+            "description": "Контакт успішно видалено"
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -388,6 +381,10 @@
       },
       "ContactCreate": {
         "type": "object",
+        "required": [
+          "name",
+          "phoneNumber"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -419,11 +416,42 @@
             "type": "boolean",
             "example": false
           }
-        },
-        "required": [
-          "name",
-          "phoneNumber"
-        ]
+        }
+      },
+      "ContactUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Іван Петренко"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ivan.petrenko@example.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+380961234567"
+          },
+          "contactType": {
+            "type": "string",
+            "enum": [
+              "personal",
+              "home",
+              "work"
+            ],
+            "example": "personal"
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
+          },
+          "isFavourite": {
+            "type": "boolean",
+            "example": false
+          }
+        }
       }
     },
     "responses": {
@@ -436,7 +464,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "Ви не авторизовані для цієї дії"
+                  "example": "Not authorized"
                 }
               }
             }
