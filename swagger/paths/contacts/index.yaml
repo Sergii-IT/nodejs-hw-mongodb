@@ -1,56 +1,36 @@
 tags:
-    - Contacts
-  summary: Отримати список контактів
-  operationId: getAllContacts
-  description: Отримати список усіх контактів
-  security:
+  - Contacts
+summary: Отримати всі контакти
+operationId: getAllContacts
+description: Повертає список контактів з підтримкою пагінації та фільтрації
+security:
     - bearerAuth: []
-  parameters:
-  - name: page
-    in: query
-    description: Номер сторінки
-    required: false
-    schema:
-      type: integer
-      default: 1
-
-  - name: limit
-    in: query
-    description: Кількість контактів на сторінку
-    required: false
-    schema:
-      type: integer
-      default: 10
-
-  - name: favorite
-    in: query
-    description: Фільтрація за обраними контактами
-    required: false
-    schema:
-      type: boolean
-  responses:
+parameters:
+    - name: page
+      in: query
+      description: Номер сторінки (за замовчуванням 1)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    - name: limit
+      in: query
+      description: Кількість елементів на сторінці (за замовчуванням 10)
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+    - name: favorite
+      in: query
+      description: Фільтр за обраними (true/false)
+      schema:
+        type: boolean
+responses:
     '200':
-      description: Успішна відповідь з пагінацією
+      description: Успішне отримання списку контактів
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              totalContacts:
-                type: integer
-                example: 37
-              totalPages:
-                type: integer
-                example: 4
-              page:
-                type: integer
-                example: 2
-              limit:
-                type: integer
-                example: 10
-              contacts:
-                type: array
-                items:
-                  $ref: ../../components/schemas/Contact.yaml
+            $ref: ../../components/schemas/ContactsListResponse.yaml
     '401':
       $ref: ../../components/responses/Unauthorized.yaml

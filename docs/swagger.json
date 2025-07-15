@@ -31,9 +31,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Створити новий контакт",
-        "operationId": "createContact",
-        "description": "Додати новий контакт до списку користувача",
+        "summary": "Додати новий контакт",
+        "operationId": "addContact",
+        "description": "Створити новий контакт",
         "security": [
           {
             "bearerAuth": []
@@ -51,7 +51,7 @@
         },
         "responses": {
           "201": {
-            "description": "Контакт успішно створено",
+            "description": "Контакт створено",
             "content": {
               "application/json": {
                 "schema": {
@@ -86,9 +86,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Отримати список контактів",
+        "summary": "Отримати всі контакти",
         "operationId": "getAllContacts",
-        "description": "Отримати список усіх контактів",
+        "description": "Повертає список контактів з підтримкою пагінації та фільтрації",
         "security": [
           {
             "bearerAuth": []
@@ -98,28 +98,27 @@
           {
             "name": "page",
             "in": "query",
-            "description": "Номер сторінки",
-            "required": false,
+            "description": "Номер сторінки (за замовчуванням 1)",
             "schema": {
               "type": "integer",
+              "minimum": 1,
               "default": 1
             }
           },
           {
             "name": "limit",
             "in": "query",
-            "description": "Кількість контактів на сторінку",
-            "required": false,
+            "description": "Кількість елементів на сторінці (за замовчуванням 10)",
             "schema": {
               "type": "integer",
+              "minimum": 1,
               "default": 10
             }
           },
           {
             "name": "favorite",
             "in": "query",
-            "description": "Фільтрація за обраними контактами",
-            "required": false,
+            "description": "Фільтр за обраними (true/false)",
             "schema": {
               "type": "boolean"
             }
@@ -127,35 +126,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Успішна відповідь з пагінацією",
+            "description": "Успішне отримання списку контактів",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "totalContacts": {
-                      "type": "integer",
-                      "example": 37
-                    },
-                    "totalPages": {
-                      "type": "integer",
-                      "example": 4
-                    },
-                    "page": {
-                      "type": "integer",
-                      "example": 2
-                    },
-                    "limit": {
-                      "type": "integer",
-                      "example": 10
-                    },
-                    "contacts": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Contact"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/ContactsListResponse"
                 }
               }
             }
@@ -298,7 +273,7 @@
         ],
         "summary": "Видалити контакт",
         "operationId": "deleteContact",
-        "description": "Видалити контакт за унікальним ID",
+        "description": "Видалення контакту за ID",
         "security": [
           {
             "bearerAuth": []
@@ -378,6 +353,38 @@
           "name",
           "phoneNumber"
         ]
+      },
+      "ContactsListResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "contacts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "example": 32
+              },
+              "page": {
+                "type": "integer",
+                "example": 1
+              },
+              "limit": {
+                "type": "integer",
+                "example": 10
+              }
+            }
+          }
+        }
       },
       "ContactCreate": {
         "type": "object",
