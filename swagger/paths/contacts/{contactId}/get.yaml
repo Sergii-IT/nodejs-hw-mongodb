@@ -12,7 +12,6 @@ parameters:
     description: Унікальний ID контакту
     schema:
       type: string
-
 responses:
   '200':
     description: Контакт знайдено
@@ -32,4 +31,4 @@ responses:
   '404':
     $ref: ../../../components/responses/NotFound.yaml
   '401':
-    $ref: '../../../components/responses/Unauthorized.yaml'
+    $ref: ../../../components/responses/Unauthorized.yaml

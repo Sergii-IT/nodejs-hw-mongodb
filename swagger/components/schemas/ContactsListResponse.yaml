@@ -1,0 +1,21 @@
+type: object
+properties:
+  code:
+    type: integer
+    example: 200
+  data:
+    type: object
+    properties:
+      contacts:
+        type: array
+        items:
+          $ref: ./Contact.yaml
+      total:
+        type: integer
+        example: 32
+      page:
+        type: integer
+        example: 1
+      limit:
+        type: integer
+        example: 10
