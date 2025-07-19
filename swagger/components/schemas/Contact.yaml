@@ -5,16 +5,33 @@ properties:
   name:
     type: string
   email:
-    type: [string, "null"]
+   type: [string, "null"]
   phoneNumber:
     type: string
   contactType:
     type: string
     enum: [personal, home, work]
   photo:
-    type: [string, "null"]
-  isFavourite:
+   type: [string, "null"]
+  favourite:
     type: boolean
+  userId:
+    type: string
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time
+  __v:
+    type: integer
 required:
+  - _id
   - name
   - phoneNumber
+  - contactType
+  - favourite
+  - userId
+  - createdAt
+  - updatedAt
+  - __v

@@ -4,6 +4,12 @@ content:
     schema:
       type: object
       properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: integer
+          example: 404
         message:
           type: string
-          example: Контакт не знайдено
+          example: Not Found
