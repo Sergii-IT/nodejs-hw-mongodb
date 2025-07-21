@@ -13,6 +13,7 @@ import Session from '../db/models/Session.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 
 const JWT_SECRET = getEnvVar('JWT_SECRET');
+console.log('JWT_SECRET:', JWT_SECRET);
 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -35,27 +36,13 @@ export const registerUser = async (req, res) => {
   });
 };
 
-export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    throw createHttpError(400, 'Missing email or password');
+export const loginUser = async (req, res, next) => {
+  try {
+    const result = await login(req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error); // передає помилку до централізованого error handler-а
   }
-
-  const { accessToken, refreshToken } = await login({ email, password });
-
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-  });
-
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully logged in an user!',
-    data: { accessToken },
-  });
 };
 
 export const refreshSession = async (req, res) => {
