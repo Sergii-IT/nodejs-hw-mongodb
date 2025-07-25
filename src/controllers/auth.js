@@ -42,13 +42,20 @@ export const loginUser = async (req, res) => {
     throw createHttpError(400, 'Missing email or password');
   }
 
-  const { accessToken, refreshToken } = await login({ email, password });
+  const { accessToken, refreshToken, sessionId  } = await login({ email, password });
 
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     sameSite: 'strict',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+
+  res.cookie('sessionId', sessionId, {
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: process.env.NODE_ENV === 'production',
+  maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 
   res.status(200).json({
@@ -65,11 +72,16 @@ export const refreshSession = async (req, res) => {
     throw createHttpError(401, 'Missing refresh token');
   }
 
-  const { accessToken, refreshToken: newRefreshToken } = await refresh(
-    refreshToken,
-  );
+  const { accessToken, refreshToken: newRefreshToken, sessionId } = await refresh(refreshToken);
 
   res.cookie('refreshToken', newRefreshToken, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+
+  res.cookie('sessionId', sessionId, {
     httpOnly: true,
     sameSite: 'strict',
     secure: process.env.NODE_ENV === 'production',
@@ -92,6 +104,7 @@ export const logoutUser = async (req, res) => {
 
   await logout(refreshToken);
   res.clearCookie('refreshToken');
+  res.clearCookie('sessionId');
   res.status(204).send();
 };
 

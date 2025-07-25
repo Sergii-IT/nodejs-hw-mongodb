@@ -51,15 +51,15 @@ export const login = async ({ email, password }) => {
   const accessTokenValidUntil = new Date(now.getTime() + ACCESS_EXPIRES_IN * 1000);
   const refreshTokenValidUntil = new Date(now.getTime() + REFRESH_EXPIRES_IN * 1000);
 
-  await Session.create({
-    userId: user._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil,
-    refreshTokenValidUntil,
-  });
+  const session = await Session.create({
+  userId: user._id,
+  accessToken,
+  refreshToken,
+  accessTokenValidUntil,
+  refreshTokenValidUntil,
+});
 
-  return { accessToken, refreshToken };
+return { accessToken, refreshToken, sessionId: session._id };
 };
 
 // Оновлення токенів (сесії)
@@ -89,7 +89,7 @@ export const refresh = async (refreshToken) => {
   const accessTokenValidUntil = new Date(now.getTime() + ACCESS_EXPIRES_IN * 1000);
   const refreshTokenValidUntil = new Date(now.getTime() + REFRESH_EXPIRES_IN * 1000);
 
-  await Session.create({
+  const session = await Session.create({
     userId: payload.userId,
     accessToken,
     refreshToken: newRefreshToken,
@@ -97,7 +97,7 @@ export const refresh = async (refreshToken) => {
     refreshTokenValidUntil,
   });
 
-  return { accessToken, refreshToken: newRefreshToken };
+  return { accessToken, refreshToken: newRefreshToken, sessionId: session._id, };
 };
 
 // Логаут

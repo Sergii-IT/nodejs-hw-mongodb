@@ -345,13 +345,34 @@
               "null"
             ]
           },
-          "isFavourite": {
+          "favourite": {
             "type": "boolean"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "__v": {
+            "type": "integer"
           }
         },
         "required": [
+          "_id",
           "name",
-          "phoneNumber"
+          "phoneNumber",
+          "contactType",
+          "favourite",
+          "userId",
+          "createdAt",
+          "updatedAt",
+          "__v"
         ]
       },
       "ContactsListResponse": {
@@ -463,15 +484,23 @@
     },
     "responses": {
       "Unauthorized": {
-        "description": "Неавторизований доступ",
+        "description": "Немає доступу (Unauthorized)",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "fail"
+                },
+                "code": {
+                  "type": "integer",
+                  "example": 401
+                },
                 "message": {
                   "type": "string",
-                  "example": "Not authorized"
+                  "example": "Unauthorized"
                 }
               }
             }
@@ -501,9 +530,17 @@
             "schema": {
               "type": "object",
               "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "code": {
+                  "type": "integer",
+                  "example": 404
+                },
                 "message": {
                   "type": "string",
-                  "example": "Контакт не знайдено"
+                  "example": "Not Found"
                 }
               }
             }
