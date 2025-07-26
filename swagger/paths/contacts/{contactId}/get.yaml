@@ -9,12 +9,12 @@ parameters:
   - name: contactId
     in: path
     required: true
-    description: Унікальний ID контакту
+    description: Унікальний ідентифікатор контакту
     schema:
       type: string
 responses:
   '200':
-    description: Контакт знайдено
+    description: Контакт успішно знайдено
     content:
       application/json:
         schema:
@@ -24,11 +24,10 @@ responses:
               type: integer
               example: 200
             data:
-              type: object
-              properties:
-                contact:
-                  $ref: ../../../components/schemas/Contact.yaml
+              $ref: ../../../components/schemas/Contact.yaml
   '404':
+    description: Контакт не знайдено
     $ref: ../../../components/responses/NotFound.yaml
   '401':
+    description: Неавторизований запит
     $ref: ../../../components/responses/Unauthorized.yaml

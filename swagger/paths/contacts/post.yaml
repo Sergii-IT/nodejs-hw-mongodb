@@ -1,33 +1,35 @@
-tags:
+tags: 
   - Contacts
 summary: Додати новий контакт
 operationId: addContact
 description: Створити новий контакт
 security:
-    - bearerAuth: []
+  - bearerAuth: []
 requestBody:
-    required: true
-    content:
-      multipart/form-data:
-        schema:
-          $ref: ../../components/schemas/ContactCreate.yaml
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        $ref: ../../components/schemas/ContactCreate.yaml
 responses:
-    '201':
-      description: Контакт створено
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 201
-              data:
-                type: object
-                properties:
-                  contact:
-                    $ref: ../../components/schemas/Contact.yaml
-    '400':
-      $ref: ../../components/responses/BadRequest.yaml
-    '401':
-      $ref: ../../components/responses/Unauthorized.yaml
+  '201':
+    description: Контакт успішно створено
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created a contact!
+            data:
+              $ref: ../../components/schemas/Contact.yaml
+  '400':
+    description: Невірний формат запиту
+    $ref: ../../components/responses/BadRequest.yaml
+  '401':
+    description: Неавторизований доступ
+    $ref: ../../components/responses/Unauthorized.yaml

@@ -20,9 +20,10 @@ properties:
       - home
       - work
     example: home
-  photo:
-    type: string
-    format: binary
   isFavourite:
     type: boolean
     example: false
+  photo:
+    type: string
+    format: binary
+

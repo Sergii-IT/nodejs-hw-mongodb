@@ -17,9 +17,9 @@ properties:
       - home
       - work
     example: personal
-  photo:
-    type: string
-    format: binary
   isFavourite:
     type: boolean
     example: false
+  photo:
+    type: string
+    format: binary
