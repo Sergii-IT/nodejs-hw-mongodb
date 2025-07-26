@@ -2,36 +2,42 @@ type: object
 properties:
   _id:
     type: string
+    example: "64ccee94f1c2ec2f487934d2"
   name:
     type: string
-  email:
-   type: [string, "null"]
+    example: "Іван Іванов"
   phoneNumber:
     type: string
+    example: "+380501234567"
+  email:
+    type: string
+    format: email
+    example: "ivan@example.com"
   contactType:
     type: string
-    enum: [personal, home, work]
-  photo:
-   type: [string, "null"]
-  favourite:
+    enum: [personal, work, other]
+    example: "work"
+  isFavourite:
     type: boolean
-  userId:
+    example: false
+  photo:
     type: string
+    format: uri
+    example: "https://example.com/avatar.jpg"
   createdAt:
     type: string
     format: date-time
+    example: "2024-01-01T10:00:00Z"
   updatedAt:
     type: string
     format: date-time
-  __v:
-    type: integer
+    example: "2024-01-02T12:30:00Z"
 required:
   - _id
   - name
   - phoneNumber
+  - email
   - contactType
-  - favourite
-  - userId
+  - isFavourite
   - createdAt
   - updatedAt
-  - __v

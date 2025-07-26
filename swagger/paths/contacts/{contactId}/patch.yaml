@@ -1,15 +1,15 @@
-tags:
+tags: 
   - Contacts
 summary: Оновити контакт
 operationId: updateContact
-description: Оновити інформацію про контакт за ID
+description: Оновлює інформацію про контакт за його унікальним ID
 security:
   - bearerAuth: []
 parameters:
   - name: contactId
     in: path
     required: true
-    description: Унікальний ID контакту
+    description: Унікальний ідентифікатор контакту
     schema:
       type: string
 requestBody:
@@ -20,15 +20,18 @@ requestBody:
         $ref: ../../../components/schemas/ContactUpdate.yaml
 responses:
   '200':
-    description: Контакт оновлено
+    description: Контакт успішно оновлено
     content:
       application/json:
         schema:
           type: object
           properties:
-            code:
+            status:
               type: integer
               example: 200
+            message:
+              type: string
+              example: Contact successfully updated!
             data:
               type: object
               properties:
@@ -36,7 +39,7 @@ responses:
                   $ref: ../../../components/schemas/Contact.yaml
   '400':
     $ref: ../../../components/responses/BadRequest.yaml
-  '404':
-    $ref: ../../../components/responses/NotFound.yaml
   '401':
     $ref: ../../../components/responses/Unauthorized.yaml
+  '404':
+    $ref: ../../../components/responses/NotFound.yaml

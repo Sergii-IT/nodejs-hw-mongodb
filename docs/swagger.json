@@ -51,23 +51,22 @@
         },
         "responses": {
           "201": {
-            "description": "Контакт створено",
+            "description": "Контакт успішно створено",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "code": {
+                    "status": {
                       "type": "integer",
                       "example": 201
                     },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully created a contact!"
+                    },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "contact": {
-                          "$ref": "#/components/schemas/Contact"
-                        }
-                      }
+                      "$ref": "#/components/schemas/Contact"
                     }
                   }
                 }
@@ -75,9 +74,11 @@
             }
           },
           "400": {
+            "description": "Невірний формат запиту",
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
+            "description": "Неавторизований доступ",
             "$ref": "#/components/responses/Unauthorized"
           }
         }
@@ -88,7 +89,7 @@
         ],
         "summary": "Отримати всі контакти",
         "operationId": "getAllContacts",
-        "description": "Повертає список контактів з підтримкою пагінації та фільтрації",
+        "description": "Отримує список контактів користувача з пагінацією та фільтром за обраними",
         "security": [
           {
             "bearerAuth": []
@@ -98,6 +99,7 @@
           {
             "name": "page",
             "in": "query",
+            "required": false,
             "description": "Номер сторінки (за замовчуванням 1)",
             "schema": {
               "type": "integer",
@@ -108,6 +110,7 @@
           {
             "name": "limit",
             "in": "query",
+            "required": false,
             "description": "Кількість елементів на сторінці (за замовчуванням 10)",
             "schema": {
               "type": "integer",
@@ -118,7 +121,8 @@
           {
             "name": "favorite",
             "in": "query",
-            "description": "Фільтр за обраними (true/false)",
+            "required": false,
+            "description": "Фільтр за обраними контактами (true / false)",
             "schema": {
               "type": "boolean"
             }
@@ -130,7 +134,52 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ContactsListResponse"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found contacts!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "perPage": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "totalItems": {
+                          "type": "integer",
+                          "example": 42
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -159,7 +208,7 @@
             "name": "contactId",
             "in": "path",
             "required": true,
-            "description": "Унікальний ID контакту",
+            "description": "Унікальний ідентифікатор контакту",
             "schema": {
               "type": "string"
             }
@@ -167,7 +216,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Контакт знайдено",
+            "description": "Контакт успішно знайдено",
             "content": {
               "application/json": {
                 "schema": {
@@ -178,12 +227,7 @@
                       "example": 200
                     },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "contact": {
-                          "$ref": "#/components/schemas/Contact"
-                        }
-                      }
+                      "$ref": "#/components/schemas/Contact"
                     }
                   }
                 }
@@ -191,9 +235,11 @@
             }
           },
           "401": {
+            "description": "Неавторизований запит",
             "$ref": "#/components/responses/Unauthorized"
           },
           "404": {
+            "description": "Контакт не знайдено",
             "$ref": "#/components/responses/NotFound"
           }
         }
@@ -204,7 +250,7 @@
         ],
         "summary": "Оновити контакт",
         "operationId": "updateContact",
-        "description": "Оновити інформацію про контакт за ID",
+        "description": "Оновлює інформацію про контакт за його унікальним ID",
         "security": [
           {
             "bearerAuth": []
@@ -215,7 +261,7 @@
             "name": "contactId",
             "in": "path",
             "required": true,
-            "description": "Унікальний ID контакту",
+            "description": "Унікальний ідентифікатор контакту",
             "schema": {
               "type": "string"
             }
@@ -233,15 +279,19 @@
         },
         "responses": {
           "200": {
-            "description": "Контакт оновлено",
+            "description": "Контакт успішно оновлено",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "code": {
+                    "status": {
                       "type": "integer",
                       "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Contact successfully updated!"
                     },
                     "data": {
                       "type": "object",
@@ -273,7 +323,7 @@
         ],
         "summary": "Видалити контакт",
         "operationId": "deleteContact",
-        "description": "Видалення контакту за ID",
+        "description": "Видалення контакту за його унікальним ID",
         "security": [
           {
             "bearerAuth": []
@@ -284,7 +334,7 @@
             "name": "contactId",
             "in": "path",
             "required": true,
-            "description": "Унікальний ID контакту",
+            "description": "Унікальний ідентифікатор контакту",
             "schema": {
               "type": "string"
             }
@@ -292,12 +342,14 @@
         ],
         "responses": {
           "204": {
-            "description": "Контакт успішно видалено"
+            "description": "Контакт успішно видалено. Вміст відповіді відсутній."
           },
           "401": {
+            "description": "Неавторизований запит",
             "$ref": "#/components/responses/Unauthorized"
           },
           "404": {
+            "description": "Контакт не знайдено",
             "$ref": "#/components/responses/NotFound"
           }
         }
@@ -317,95 +369,61 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "example": "64ccee94f1c2ec2f487934d2"
           },
           "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "example": "Іван Іванов"
           },
           "phoneNumber": {
-            "type": "string"
+            "type": "string",
+            "example": "+380501234567"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ivan@example.com"
           },
           "contactType": {
             "type": "string",
             "enum": [
               "personal",
-              "home",
-              "work"
-            ]
+              "work",
+              "other"
+            ],
+            "example": "work"
+          },
+          "isFavourite": {
+            "type": "boolean",
+            "example": false
           },
           "photo": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "favourite": {
-            "type": "boolean"
-          },
-          "userId": {
-            "type": "string"
+            "type": "string",
+            "format": "uri",
+            "example": "https://example.com/avatar.jpg"
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
           },
           "updatedAt": {
             "type": "string",
-            "format": "date-time"
-          },
-          "__v": {
-            "type": "integer"
+            "format": "date-time",
+            "example": "2024-01-02T12:30:00Z"
           }
         },
         "required": [
           "_id",
           "name",
           "phoneNumber",
+          "email",
           "contactType",
-          "favourite",
-          "userId",
+          "isFavourite",
           "createdAt",
-          "updatedAt",
-          "__v"
+          "updatedAt"
         ]
-      },
-      "ContactsListResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "example": 200
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "contacts": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Contact"
-                }
-              },
-              "total": {
-                "type": "integer",
-                "example": 32
-              },
-              "page": {
-                "type": "integer",
-                "example": 1
-              },
-              "limit": {
-                "type": "integer",
-                "example": 10
-              }
-            }
-          }
-        }
       },
       "ContactCreate": {
         "type": "object",
@@ -436,13 +454,13 @@
             ],
             "example": "home"
           },
-          "photo": {
-            "type": "string",
-            "format": "binary"
-          },
           "isFavourite": {
             "type": "boolean",
             "example": false
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
           }
         }
       },
@@ -471,13 +489,13 @@
             ],
             "example": "personal"
           },
-          "photo": {
-            "type": "string",
-            "format": "binary"
-          },
           "isFavourite": {
             "type": "boolean",
             "example": false
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
           }
         }
       }
