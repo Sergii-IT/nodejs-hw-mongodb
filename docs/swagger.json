@@ -248,9 +248,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Оновити контакт",
-        "operationId": "updateContact",
-        "description": "Оновлює інформацію про контакт за його унікальним ID",
+        "summary": "Оновити контакт за ID",
+        "operationId": "updateContactById",
+        "description": "Оновлює контакт, повертає контакт у полі data.contact",
         "security": [
           {
             "bearerAuth": []
@@ -291,7 +291,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Contact successfully updated!"
+                      "example": "Successfully updated contact!"
                     },
                     "data": {
                       "type": "object",
@@ -502,23 +502,23 @@
     },
     "responses": {
       "Unauthorized": {
-        "description": "Немає доступу (Unauthorized)",
+        "description": "Неавторизований доступ",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "string",
-                  "example": "fail"
-                },
-                "code": {
                   "type": "integer",
                   "example": 401
                 },
                 "message": {
                   "type": "string",
-                  "example": "Unauthorized"
+                  "example": "Something went wrong"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "Invalid or expired access token"
                 }
               }
             }
@@ -526,15 +526,23 @@
         }
       },
       "BadRequest": {
-        "description": "Невалідні дані",
+        "description": "Невірний формат запиту",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
                 "message": {
                   "type": "string",
-                  "example": "Некоректний запит"
+                  "example": "Something went wrong"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "is not a valid id"
                 }
               }
             }
@@ -549,16 +557,16 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "code": {
                   "type": "integer",
                   "example": 404
                 },
                 "message": {
                   "type": "string",
-                  "example": "Not Found"
+                  "example": "Something went wrong"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "Contact not found"
                 }
               }
             }

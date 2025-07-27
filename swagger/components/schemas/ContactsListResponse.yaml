@@ -1,21 +1,33 @@
 type: object
 properties:
-  code:
+  status:
     type: integer
     example: 200
+  message:
+    type: string
+    example: Successfully found contacts!
   data:
     type: object
     properties:
-      contacts:
+      data:
         type: array
         items:
           $ref: ./Contact.yaml
-      total:
-        type: integer
-        example: 32
       page:
         type: integer
         example: 1
-      limit:
+      perPage:
         type: integer
         example: 10
+      totalItems:
+        type: integer
+        example: 4
+      totalPages:
+        type: integer
+        example: 1
+      hasPreviousPage:
+        type: boolean
+        example: false
+      hasNextPage:
+        type: boolean
+        example: false
