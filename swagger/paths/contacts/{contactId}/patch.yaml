@@ -34,10 +34,7 @@ responses:
               example: Successfully updated contact!
 
             data:
-              type: object
-              properties:
-                contact:
-                  $ref: ../../../components/schemas/Contact.yaml
+              $ref: ../../../components/schemas/Contact.yaml
   '400':
     $ref: ../../../components/responses/BadRequest.yaml
   '401':
