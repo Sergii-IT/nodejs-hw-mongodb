@@ -1,4 +1,4 @@
-tags:
+tags: 
   - Contacts
 summary: Оновити контакт за ID
 operationId: updateContactById
@@ -32,6 +32,7 @@ responses:
             message:
               type: string
               example: Successfully updated contact!
+
             data:
               type: object
               properties:
