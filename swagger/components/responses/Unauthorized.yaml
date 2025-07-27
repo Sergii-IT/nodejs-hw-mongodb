@@ -1,15 +1,15 @@
-description: Немає доступу (Unauthorized)
+description: Неавторизований доступ
 content:
   application/json:
     schema:
       type: object
       properties:
         status:
-          type: string
-          example: fail
-        code:
           type: integer
           example: 401
         message:
           type: string
-          example: Unauthorized
+          example: Something went wrong
+        data:
+          type: string
+          example: Invalid or expired access token
