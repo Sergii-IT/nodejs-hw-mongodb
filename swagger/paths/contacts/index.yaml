@@ -15,6 +15,14 @@ parameters:
       type: integer
       minimum: 1
       default: 1
+      
+  - name: perPage
+    in: query
+    description: Number of contacts per page
+    required: false
+    schema:
+      type: integer
+      example: 10
 
   - name: sortBy
     in: query
