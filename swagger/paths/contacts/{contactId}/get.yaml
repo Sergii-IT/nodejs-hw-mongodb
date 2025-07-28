@@ -18,16 +18,16 @@ responses:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 200
-            data:
-              type: object
-              properties:
-                contact:
-                  $ref: ../../../components/schemas/Contact.yaml
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Successfully found contact with id 64e4e5d6c4a8d2abdf328a91!
+              data:
+                $ref: '../../../components/schemas/Contact.yaml'
   '401':
     $ref: ../../../components/responses/Unauthorized.yaml
   '404':
